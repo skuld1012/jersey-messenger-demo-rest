@@ -3,7 +3,6 @@ package me.tedzhang.demo.java.messenger.resource;
 import java.net.URI;
 import java.util.List;
 
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +11,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -30,7 +30,11 @@ public class MessageResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Message> getMessages(@BeanParam MessageFilterBean filterBean) {
+	//public List<Message> getMessages(@BeanParam MessageFilterBean filterBean) {
+	public List<Message> getMessages(@QueryParam("year") int year,
+									 @QueryParam("start") int start,
+									 @QueryParam("size") int size) {
+		MessageFilterBean filterBean = new MessageFilterBean(year, start, size);
 		if (filterBean.getYear() > 0)
 			return service.getAllMessagesForYear(filterBean.getYear());
 		if (filterBean.getStart() >= 0 && filterBean.getSize() > 0)
@@ -76,7 +80,7 @@ public class MessageResource {
 				   .path(MessageResource.class)
 				   .path(MessageResource.class, "getCommentResource")
 				   .path(CommentResource.class)
-				   .resolveTemplate("messageId", message.getId())
+				   //.resolveTemplate("messageId", message.getId())
 				   .build().toString();
 		return url;
 	}
